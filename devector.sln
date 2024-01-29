@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "devector", "devector.csproj", "{794C23BF-0862-4B90-8D41-AB9BB090A398}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{794C23BF-0862-4B90-8D41-AB9BB090A398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{794C23BF-0862-4B90-8D41-AB9BB090A398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{794C23BF-0862-4B90-8D41-AB9BB090A398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{794C23BF-0862-4B90-8D41-AB9BB090A398}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0075AD9E-8027-4EF0-9185-F52EE48D4BF7}
+	EndGlobalSection
+EndGlobal

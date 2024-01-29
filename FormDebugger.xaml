@@ -1,0 +1,354 @@
+﻿<Window x:Class="devector.FormDebugger"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:devector"
+		mc:Ignorable="d"
+		Title="FormDebugger" Height="800" Width="1259 ">
+	<DockPanel>
+		<!-- Menu at the top -->
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="File"/>
+		</Menu>
+		<!-- ToolBar below the Menu -->
+		<ToolBar DockPanel.Dock="Top">
+			<Button Content="Step" Click="button_step_click"/>
+			<Button Content="Step 100" Click="button_step100_click"/>
+            <Button Content="Step Frame" Click="button_exec_frame_click"/>
+        </ToolBar>
+
+		<!-- Main content area -->
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="500" MinWidth="200"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition MinWidth="80"/>
+			</Grid.ColumnDefinitions>
+
+			<!-- Left column with GroupBox -->
+			<GroupBox Header="Disasm" Grid.Column="0">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<!-- Search TextBox at the top -->
+					<TextBox Grid.Row="0" Margin="2" />
+
+					<!-- Disasm ListBox in the middle -->
+                    <ListBox Grid.Row="1" Margin="2" x:Name="listBox_disasm">
+						<ListBox.ItemContainerStyle>
+							<Style TargetType="ListBoxItem">
+								<Setter Property="Height" Value="20" />
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="ListBoxItem">
+											<Grid>
+												<Grid>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="30"/>
+														<ColumnDefinition Width="50"/>
+														<ColumnDefinition Width="200"/>
+														<ColumnDefinition Width="100"/>
+														<ColumnDefinition Width="*"/>
+													</Grid.ColumnDefinitions>
+                                                    <Rectangle Grid.Column="0" Fill="#FFE0E0E0"/>
+                                                    <Rectangle Grid.Column="1" Fill="#FFE0E0E0" />
+                                                    <Rectangle  Grid.Column="3" Fill="#FFE0E0E0" />
+                                                    <Rectangle Grid.Column="4" Fill="#FFE0E0E0" Margin="2,0" />
+												</Grid>
+												<!-- selection box -->
+												<Rectangle x:Name="SelectionOverlay" IsHitTestVisible="False" Opacity="{TemplateBinding Opacity}" Fill="#FF80C8FF" SnapsToDevicePixels="true" />
+												<!-- item data -->
+												<ContentPresenter/>
+											</Grid>
+											<ControlTemplate.Triggers>
+												<Trigger Property="IsSelected" Value="true">
+													<Setter Property="Opacity" TargetName="SelectionOverlay" Value="0.5"/>
+												</Trigger>
+												<Trigger Property="IsSelected" Value="false">
+													<Setter Property="Opacity" TargetName="SelectionOverlay" Value="0.0"/>
+												</Trigger>
+											</ControlTemplate.Triggers>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+						</ListBox.ItemContainerStyle>
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="30"/>
+										<ColumnDefinition Width="50"/>
+										<ColumnDefinition Width="200"/>
+										<ColumnDefinition Width="100"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+
+                                    <CheckBox Grid.Column="0" Background="#FFA0A0A0" Margin="10,2,0,0"/>
+                                    <Label Grid.Column="1" Content="{Binding addr}" FontFamily="MS Gothic" Foreground="#FF404040"/>
+									<DockPanel Grid.Column="2" Margin="10,0" VerticalAlignment="Center">
+										<TextBlock Text="{Binding opcode}" FontFamily="Consolas" FontSize="15" />
+										<TextBlock Text="{Binding op}" FontFamily="Consolas" FontSize="15" Foreground="DarkCyan"/>
+										<TextBlock Text="{Binding op_d}" FontFamily="Consolas" FontSize="15" Foreground="Blue"/>
+										<TextBlock Text="{Binding result}" FontFamily="Consolas" FontSize="15" Margin="10,0"/>
+									</DockPanel>
+                                    <Label Grid.Column="3" Content="{Binding stats}" Foreground="#FF404040" FontFamily="MS Gothic" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+									<Label Grid.Column="4" Content="{Binding labels}" />
+								</Grid>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+
+					<!-- Label at the bottom -->
+					<Grid Grid.Row="2">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Label Grid.Column="0" Content="Labels:" Margin="2" />
+                        <TextBox Grid.Column="1" IsReadOnly="True" Margin="2" KeyDown="listBox_disasm_key_down"/>
+						<Grid Grid.Column="2" >
+                            <Label x:Name="label_frame_execution_time" Content="This text is blue." VerticalAlignment="Center" />
+						</Grid>
+					</Grid>
+				</Grid>
+			</GroupBox>
+
+			<!-- GridSplitter to resize the left column -->
+			<GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" />
+
+			<!-- Middle and Right columns -->
+			<Grid Grid.Column="2" HorizontalAlignment="Left">
+				<!-- Your content for the middle and right columns -->
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*" MinHeight="50"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*" MinHeight="50"/>
+				</Grid.RowDefinitions>
+				
+				<!-- State -->
+				<DockPanel>
+					<!-- REGS -->
+					<GroupBox Header="Regs" Grid.Column="0" Width="Auto" Height="220" HorizontalAlignment="Left">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition Height="8"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+                                <ColumnDefinition Width="40"/>
+							</Grid.ColumnDefinitions>
+							<!-- Labels -->
+							<Label Content="AF" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Right"/>
+							<Label Content="BC" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Right"/>
+							<Label Content="DE" Grid.Column="0" Grid.Row="2" HorizontalContentAlignment="Right"/>
+							<Label Content="HL" Grid.Column="0" Grid.Row="3" HorizontalContentAlignment="Right"/>
+							<Label Content="SP" Grid.Column="0" Grid.Row="4" HorizontalContentAlignment="Right"/>
+							<Label Content="PC" Grid.Column="0" Grid.Row="5" HorizontalContentAlignment="Right"/>
+							<!-- TextBoxes -->
+                            <TextBox x:Name="textbox_af" Text="DDFF" Grid.Column="1" Grid.Row="0" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_bc" Text="1199" Grid.Column="1" Grid.Row="1" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_de" Grid.Column="1" Grid.Row="2" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_hl" Grid.Column="1" Grid.Row="3" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_sp" Grid.Column="1" Grid.Row="4" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_pc" Grid.Column="1" Grid.Row="5" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+						</Grid>
+					</GroupBox>
+					<!-- Flags -->
+					<GroupBox Header="Flags" Grid.Column="1" Width="Auto" Height="220" HorizontalAlignment="Left">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition Height="10"/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+                                <ColumnDefinition Width="14"/>
+							</Grid.ColumnDefinitions>
+							<!-- Labels -->
+							<Label Content="C" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Right"/>
+							<Label Content="Z" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Right"/>
+							<Label Content="P" Grid.Column="0" Grid.Row="2" HorizontalContentAlignment="Right"/>
+							<Label Content="S" Grid.Column="0" Grid.Row="3" HorizontalContentAlignment="Right"/>
+							<Label Content="AC" Grid.Column="0" Grid.Row="4" HorizontalContentAlignment="Right"/>
+							<Label Content="INTE" Grid.Column="0" Grid.Row="6" HorizontalContentAlignment="Right"/>
+							<Label Content="IFF" Grid.Column="0" Grid.Row="7" HorizontalContentAlignment="Right"/>
+							<Label Content="HLTA" Grid.Column="0" Grid.Row="8" HorizontalContentAlignment="Right"/>
+							<!-- TextBoxes -->
+                            <TextBox x:Name="textbox_cf" Text="0" Grid.Column="1" Grid.Row="0" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_zf" Grid.Column="1" Grid.Row="1" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_pf" Grid.Column="1" Grid.Row="2" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_sf" Grid.Column="1" Grid.Row="3" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_acf" Grid.Column="1" Grid.Row="4" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_inte" Grid.Column="1" Grid.Row="6" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_iff" Grid.Column="1" Grid.Row="7" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_hlta" Grid.Column="1" Grid.Row="8" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+							<!-- separator -->
+							<Separator Height="1" Grid.Column="0" Grid.Row="5"  Background="LightGray" />
+							<Separator Height="1" Grid.Column="1" Grid.Row="5"  Background="LightGray" />
+						</Grid>
+					</GroupBox>
+					<!-- Stack -->
+					<GroupBox Header="Stack" Grid.Column="2" Width="Auto" Height="220" HorizontalAlignment="Left">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition Height="8"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+                                <ColumnDefinition Width="40"/>
+							</Grid.ColumnDefinitions>
+							<!-- Labels -->
+							<Label Content="-6" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Right"/>
+							<Label Content="-4" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Right"/>
+							<Label Content="-2" Grid.Column="0" Grid.Row="2" HorizontalContentAlignment="Right"/>
+							<Label Content="SP" Grid.Column="0" Grid.Row="3" HorizontalContentAlignment="Right"/>
+							<Label Content="+2" Grid.Column="0" Grid.Row="4" HorizontalContentAlignment="Right"/>
+							<Label Content="+4" Grid.Column="0" Grid.Row="5" HorizontalContentAlignment="Right"/>
+							<Label Content="+6" Grid.Column="0" Grid.Row="6" HorizontalContentAlignment="Right"/>
+							<!-- TextBoxes -->
+                            <TextBox x:Name="textbox_sp_n6" Text="DDFF" Grid.Column="1" Grid.Row="0" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_sp_n4" Grid.Column="1" Grid.Row="1" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_sp_n2" Grid.Column="1" Grid.Row="2" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_sp_0" Grid.Column="1" Grid.Row="3" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_sp_p2" Grid.Column="1" Grid.Row="4" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_sp_p4" Grid.Column="1" Grid.Row="5" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                            <TextBox x:Name="textbox_sp_p6" Grid.Column="1" Grid.Row="6" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+						</Grid>
+					</GroupBox>
+					<!-- Hardware -->
+					<GroupBox Header="Hardware" Grid.Column="3" Width="Auto" Height="220" HorizontalAlignment="Left">
+						<StackPanel>
+							<Grid VerticalAlignment="Top">
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition/>
+									<ColumnDefinition/>
+								</Grid.ColumnDefinitions>
+								<!-- Labels -->
+                                <Label Content="CPU Cycles" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Right" Margin="0,-2"/>
+                                <Label Content="Last Run" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Right" Margin="0,-2"/>
+                                <Label Content="CRT" Grid.Column="0" Grid.Row="2" HorizontalContentAlignment="Right" Margin="0,-2"/>
+								<!-- TextBoxes -->
+                                <TextBox x:Name="textbox_cc" Text="123456789A" Grid.Column="1" Grid.Row="0" IsReadOnly="True" Background="LightGray" Padding="0,2" FontFamily="MS Gothic" FontSize="13" FontWeight="Bold" Margin="0,4" TextAlignment="Center"/>
+                                <TextBox x:Name="textbox_last_run" Text="123456789A" Grid.Column="1" Grid.Row="1" IsReadOnly="True" Background="LightGray" Padding="0,2" FontFamily="MS Gothic" FontSize="13" FontWeight="Bold" Margin="0,4" TextAlignment="Center"/>
+								<!-- CRT X and Y -->
+								<Grid Grid.Column="1" Grid.Row="2" >
+									<Grid.RowDefinitions>
+										<RowDefinition/>
+									</Grid.RowDefinitions>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+                                        <ColumnDefinition Width="30"/>
+										<ColumnDefinition Width="10"/>
+										<ColumnDefinition/>
+                                        <ColumnDefinition  Width="30"/>
+									</Grid.ColumnDefinitions>
+									<Label Content="X:" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Right"/>
+                                    <TextBox x:Name="textbox_crt_x" Text="999" Grid.Column="1" Grid.Row="0" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+									<Label Content="X:" Grid.Column="3" Grid.Row="0" HorizontalContentAlignment="Right"/>
+                                    <TextBox x:Name="textbox_crt_y" Text="999" Grid.Column="4" Grid.Row="0" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+								</Grid>
+							</Grid>
+							<!-- Mapping -->
+							<GroupBox Header="Mapping" Height="120">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition/>
+										<RowDefinition/>
+										<RowDefinition/>
+										<RowDefinition/>
+									</Grid.RowDefinitions>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<!-- Labels -->
+                                    <Label Content="RAM Mode" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Right" Margin="0,-2"/>
+                                    <Label Content="RAM Page" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Right" Margin="0,-2"/>
+									<Label Content="Stack Mode" Grid.Column="0" Grid.Row="2" HorizontalContentAlignment="Right" Margin="0,-2"/>
+                                    <Label Content="Stack PAge" Grid.Column="0" Grid.Row="3" HorizontalContentAlignment="Right" Margin="0,-2"/>
+									<!-- TextBoxes -->
+                                    <TextBox x:Name="textbox_mapping_ram_mode" Text="8ACE" Grid.Column="1" Grid.Row="0" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                                    <TextBox x:Name="textbox_mapping_ram_page" Text="3" Grid.Column="1" Grid.Row="1" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                                    <TextBox x:Name="textbox_mapping_stack_mode" Text="Off" Grid.Column="1" Grid.Row="2" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+                                    <TextBox x:Name="textbox_mapping_stack_page" Text="2" Grid.Column="1" Grid.Row="3" IsReadOnly="True" Background="LightGray" FontSize="13" FontWeight="DemiBold" Margin="0,2" TextAlignment="Center"/>
+								</Grid>
+							</GroupBox>
+						</StackPanel>
+					</GroupBox>
+				</DockPanel>
+				<!-- Breakpoints -->
+				<GroupBox Grid.Row="1" Header="Breakpoints">
+					<DataGrid AutoGenerateColumns="False">
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Header=" ">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<CheckBox IsChecked="{Binding IsSelected}" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTextColumn Header="Address" Binding="{Binding Address}" />
+							<DataGridTextColumn Header="Access" Binding="{Binding Access}" />
+							<DataGridTextColumn Header="Condition" Binding="{Binding Condition}" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</GroupBox>
+				<!-- Watch -->
+				<GridSplitter  Grid.Row="2" Height="5" HorizontalAlignment="Stretch"/>
+				<!-- GridSplitter to resize the left column -->
+				<GroupBox Grid.Row="3" Header="Watch">
+					<DataGrid AutoGenerateColumns="False">
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Header=" ">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<CheckBox IsChecked="{Binding IsSelected}" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTextColumn Header="Address" Binding="{Binding Name}" />
+							<DataGridTextColumn Header="Access" Binding="{Binding Value}" />
+							<DataGridTextColumn Header="Condition" Binding="{Binding Condition}" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</GroupBox>
+			</Grid>
+		</Grid>
+	</DockPanel>
+</Window>
