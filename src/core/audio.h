@@ -39,7 +39,7 @@ namespace dev
         Audio(TimerI8253& _timer, AYWrapper& _aywrapper);
         ~Audio();
         void Init();
-        void Pause(bool _pause);
+        void Pause(bool _pause) const;
         void Mute(const bool _mute);
         static void Callback(void* _userdata, SDL_AudioStream* _stream, int _additionalAmount, int _totalAmount);
         void Clock(int _cycles, const float _beeper);

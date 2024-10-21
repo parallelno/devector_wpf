@@ -1,5 +1,0 @@
-C:\Work\Programming\devector\devector_wpf\out\x64\Release\Ijwhost.dll
-C:\Work\Programming\devector\devector_wpf\out\x64\Release\HAL.deps.json
-C:\Work\Programming\devector\devector_wpf\out\x64\Release\HAL.runtimeconfig.json
-C:\Work\Programming\devector\devector_wpf\HAL\tmp\x64\Release\HAL.sourcelink.json
-C:\Work\Programming\devector\devector_wpf\HAL\tmp\x64\Release\HAL.genruntimeconfig.cache

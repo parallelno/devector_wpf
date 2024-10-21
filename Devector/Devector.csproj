@@ -9,8 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HAL\HAL.vcxproj" />
-    <ProjectReference Include="..\SDL\VisualC\SDL\SDL.vcxproj" />
+    <ProjectReference Include="..\HALWrapper\HALWrapper.vcxproj" />
   </ItemGroup>
 
 </Project>

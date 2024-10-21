@@ -14,7 +14,7 @@ dev::Audio::~Audio()
 	SDL_DestroyAudioStream(m_stream);
 }
 
-void dev::Audio::Pause(bool _pause)
+void dev::Audio::Pause(bool _pause) const
 {
 	if (_pause)
 	{

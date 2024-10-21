@@ -29,12 +29,12 @@ namespace Devector
             AllocConsole();  // This will open a console window
 
             HAL obj = new HAL(42, 3.14f);
-            //obj.field1 += 20;
+            obj.field1 += 20;
 
             // Call the method from the C++/CLI class
-            //obj.DisplayData();
+            obj.DisplayData();
 
-            //HAL.DisplayData2();
+            HAL.DisplayData2();
         }
     }
 }
