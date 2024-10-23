@@ -175,12 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="hal.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="hal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SDL\VisualC\SDL\SDL.vcxproj">

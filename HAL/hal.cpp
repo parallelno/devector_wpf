@@ -1,7 +1,6 @@
 #include "hal.h"
-#include <string>
 
-void MyExportedFunction()
-{
-    std::printf("Hellow HAL!\n");
-}
+//extern "C" __declspec(dllexport) int MyExportedFunction() {
+//    // Function definition
+//    return 42;
+//}

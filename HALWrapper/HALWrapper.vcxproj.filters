@@ -6,12 +6,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\hal.cpp">
+    <ClCompile Include="..\src\halwrapper.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\hal.h">
+    <ClInclude Include="..\src\halwrapper.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

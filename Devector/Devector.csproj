@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HALWrapper\HALWrapper.vcxproj" />
+    <ProjectReference Include="..\HAL\HAL.vcxproj" />
+    <ProjectReference Include="..\SDL\VisualC\SDL\SDL.vcxproj" />
   </ItemGroup>
 
 </Project>
