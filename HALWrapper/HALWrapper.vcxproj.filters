@@ -6,13 +6,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\halwrapper.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
+    <ClInclude Include="..\src\hal\halwrapper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\halwrapper.h">
-      <Filter>src</Filter>
-    </ClInclude>
+    <ClCompile Include="..\src\hal\halwrapper.cpp" />
   </ItemGroup>
 </Project>

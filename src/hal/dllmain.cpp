@@ -6,8 +6,15 @@
 // Windows Header Files
 #include <windows.h>
 
-extern "C" __declspec(dllexport) int MyExportedFunction44() {
-    return 44;
+#include <string>
+
+
+volatile int t = 1;
+
+extern "C" __declspec(dllexport) std::wstring MyExportedFunction44(const std::wstring& _str) 
+{
+    int t = 1;
+    return _str + std::to_wstring(t);
 }
 
 BOOL APIENTRY DllMain( HMODULE hModule,

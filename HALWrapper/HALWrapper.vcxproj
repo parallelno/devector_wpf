@@ -19,15 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\halwrapper.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\halwrapper.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\HAL\HAL.vcxproj">
       <Project>{fb04bda8-b572-4957-9102-171462eef215}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\hal\halwrapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\hal\halwrapper.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
